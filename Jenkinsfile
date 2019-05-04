@@ -4,8 +4,8 @@ node {
 
     env.AWS_ECR_LOGIN=true
     def newApp
-    def registry = 'https://cloud.docker.com/u/dineshpsingh/repository/docker/'
-	def imageName = 'dineshpsingh/docker-test'
+    def registry = 'https://index.docker.io'
+	def imageName = 'dineshpsingh16/docker-test'
     def registryCredential = 'dockerhub'
 	
 	stage('Git') {
@@ -24,7 +24,11 @@ node {
 			newApp.push()
         }
 	}
-
+	stage('Registring image') {
+        docker.withRegistry(  registry, registryCredential ) {
+    		newApp.push 'latest2'
+        }
+	}
     stage('Removing image') {
         sh "docker rmi $registry:$BUILD_NUMBER"
         sh "docker rmi $registry:latest"
